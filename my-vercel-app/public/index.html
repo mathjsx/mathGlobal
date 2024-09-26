@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Demo</title>
+</head>
+<body>
+  <h1>Daftar Nilai</h1>
+  <button id="showDataBtn">Lihat Data</button>
+  <button id="addDataBtn">Tambah Data</button>
+  <div id="apiResponse"></div>
+
+  <script>
+    // Fungsi untuk menampilkan data dari API
+    document.getElementById('showDataBtn').addEventListener('click', function() {
+      fetch('/api/data')
+        .then(response => response.json())
+        .then(data => {
+          const responseDiv = document.getElementById('apiResponse');
+          responseDiv.innerHTML = ''; // Kosongkan data sebelumnya
+          data.forEach(person => {
+            responseDiv.innerHTML += `<p>Nama: ${person.name}, Umur: ${person.age}</p>`;
+          });
+        })
+        .catch(error => {
+          document.getElementById('apiResponse').textContent = 'Error loading data';
+        });
+    });
+
+    // Fungsi untuk menambah data ke API
+    document.getElementById('addDataBtn').addEventListener('click', function() {
+      const newPerson = { name: 'David', age: 28 }; // Data baru yang akan ditambahkan
+
+      fetch('/api/data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newPerson),
+      })
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('apiResponse').textContent = data.message;
+      })
+      .catch(error => {
+        document.getElementById('apiResponse').textContent = 'Error adding data';
+      });
+    });
+  </script>
+</body>
+</html>
